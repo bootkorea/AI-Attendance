@@ -18,9 +18,9 @@
 |Infra| AWS_EC2 |
 
 ## Team
-|성명|역할|
+|성명|포지션|역할|
 |---|---|
-|[소부승](https://github.com/bootkorea)| 팀장 |
-|[신승헌](https://github.com/)| 팀원 |
-|[이정현](https://github.com/)| 팀원 |
-|[지수인](https://github.com/)| 팀원 |
+|[소부승](https://github.com/bootkorea)| P.M. | Backend, Infra |
+|[신승헌](https://github.com/)| 팀원 | Frontend, Backend |
+|[이정현](https://github.com/)| 팀원 | Backend, Infra |
+|[지수인](https://github.com/)| 팀원 | Frontend |
