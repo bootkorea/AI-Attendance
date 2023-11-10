@@ -19,7 +19,7 @@
 
 ## Team
 |성명|포지션|역할|
-|---|---|
+|---|---|---|
 |[소부승](https://github.com/bootkorea)| P.M. | Backend, Infra |
 |[신승헌](https://github.com/)| 팀원 | Frontend, Backend |
 |[이정현](https://github.com/)| 팀원 | Backend, Infra |
