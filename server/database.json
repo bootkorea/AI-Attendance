@@ -1,0 +1,7 @@
+{
+    "host": "test-rds.cx1prb8gifut.us-east-1.rds.amazonaws.com",
+    "user": "admin",
+    "password": "admin123",
+    "port": "3306",
+    "database": "testdb"
+}
