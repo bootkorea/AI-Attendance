@@ -1,18 +1,24 @@
 // server library
 const express = require("express");
 const bodyParser = require("body-parser");
-const path = require("path");
 const fs = require("fs");
-// server
+const path = require("path");
 const app = express();
+
+// server
 const PORT = 12000;
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "../client/build")));
+
+app.listen(PORT, function () {
+  console.log("listen on 12000");
+});
+
 // database
 const data = fs.readFileSync("./database.json");
 const conf = JSON.parse(data);
 const mysql = require("mysql");
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 const connection = mysql.createConnection({
   host: conf.host,
@@ -30,10 +36,8 @@ app.get("/api/src", (req, res) => {
   });
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build", "index.html"));
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// web server call
+app.get("*", function (req, res) {
+  res.sendFile(path.join(__dirname, "../client/build/index.html"));
+  console.log(__dirname);
 });

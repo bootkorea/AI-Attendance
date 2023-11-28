@@ -2,11 +2,13 @@
   box-sizing: border-box;
   margin: 0;
   font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+  background-color: #fff;
 }
 
 h2 {
   padding: 10px;
   font-size: 20px;
+  padding-left: 0px;
 }
 
 h3 {
@@ -30,11 +32,13 @@ h3 {
   right: 0;
   padding-right: 20px;
   font-size: 13px;
+  background-color: #F0F2F3;
 }
 
 .Profile > span {
 
   font-weight: bold;
+  background-color: #F0F2F3;
 }
 
 .Body_block {
@@ -141,7 +145,7 @@ ul {
 }
 
 .NextClass_block {
-  margin-left: 10px;
+  margin-top: 10px;
 }
 
 .NextClass_block > h3 {
