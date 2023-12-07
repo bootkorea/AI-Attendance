@@ -29,8 +29,12 @@ const connection = mysql.createConnection({
 });
 connection.connect();
 
-app.get("/api/src", (req, res) => {
+app.get("/auth", (req, res) => {
   connection.query("SELECT * FROM user", (err, rows, fields) => {
+    if (err) throw err;
+    console.log("User info is: ", rows);
+  });
+  connection.query("SELECT * FROM class", (err, rows, fields) => {
     if (err) throw err;
     console.log("User info is: ", rows);
   });
@@ -39,5 +43,4 @@ app.get("/api/src", (req, res) => {
 // web server call
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
-  console.log(__dirname);
 });

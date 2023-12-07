@@ -4,15 +4,13 @@ import HomePage from "./pages/Home";
 import AdminPage from "./pages/Admin";
 
 const router = createBrowserRouter([
-  { path: '/', element: <LoginPage /> },
-  { path: '/home', element: <HomePage /> },
-  { path: '/admin', element: <AdminPage /> }
-])
+  { path: "/", element: <LoginPage /> },
+  { path: "/home", element: <HomePage /> },
+  { path: "/admin", element: <AdminPage /> },
+]);
 
 function App() {
-  return (
-    <RouterProvider router={router} />
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
