@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 
 function LoginPage() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [userInfo, setuserInfo] = useState({
+    u_id: "",
+    u_pw: "",
+  });
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent the form from submitting
+
+    const apiUrl = "http://localhost:12000/api/login";
+    const { username, password } = userInfo;
 
     if (username === "" || username === undefined) {
       alert("아이디를 입력하세요");
@@ -20,30 +25,36 @@ function LoginPage() {
       return false;
     }
 
-    console.log(
-      "LoginForm:window.sessionStorage(login_id) =>",
-      window.sessionStorage.getItem("id")
-    );
-
-    axios
-      .post("http://localhost:12000/login", {
+    try {
+      const res = await axios.post(apiUrl, {
         u_id: username,
         u_pw: password,
-      })
-      .then((res) => {
-        console.log("handleLogin =>", res);
-        if (res.data[0].cnt === 1) {
-          navigate("/Home");
-        } else {
-          alert("아이디, 패스워드가 정확하지 않습니다.");
-          username = "";
-          password = "";
-          navigate("/");
-        }
-      })
-      .catch((e) => {
-        console.error(e);
       });
+
+      if (res.data.success === 1) {
+        alert("안녕하세요, 교수님.");
+        navigate("/Admin");
+      } else if (res.data.success === 2) {
+        alert("안녕하세요, 노예.");
+        navigate("/Home");
+      } else if (res.data.success === 3) {
+        alert("안녕하세요, 주인님.");
+        navigate("/Admin");
+      } else {
+        alert("잘못된 아이디 혹은 비밀번호 사용");
+        navigate("/");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setuserInfo({
+      ...userInfo,
+      [name]: value,
+    });
   };
 
   return (
@@ -53,24 +64,26 @@ function LoginPage() {
         <label>
           <input
             type="text"
+            name="username"
             placeholder="학번"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={userInfo.username}
+            onChange={handleInputChange}
             required
           />
         </label>
         <label>
           <input
             type="password"
+            name="password"
             placeholder="비밀번호"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={userInfo.password}
+            onChange={handleInputChange}
             required
           />
         </label>
-        <Link to="/home" className="Login_button">
+        <div to="/home" className="Login_button">
           <button type="submit">로그인</button>
-        </Link>
+        </div>
       </form>
     </div>
   );
