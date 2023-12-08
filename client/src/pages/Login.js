@@ -33,13 +33,25 @@ function LoginPage() {
 
       if (res.data.success === 1) {
         alert("안녕하세요, 교수님.");
-        navigate("/Admin");
+        navigate("/Admin", {
+          state: {
+            user_number: username,
+          },
+        });
       } else if (res.data.success === 2) {
         alert("안녕하세요, 노예.");
-        navigate("/Home");
+        navigate("/Home", {
+          state: {
+            user_number: username,
+          },
+        });
       } else if (res.data.success === 3) {
         alert("안녕하세요, 주인님.");
-        navigate("/Admin");
+        navigate("/Admin", {
+          state: {
+            user_number: username,
+          },
+        });
       } else {
         alert("잘못된 아이디 혹은 비밀번호 사용");
         navigate("/");

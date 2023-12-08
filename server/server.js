@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const app = express();
 const cors = require("cors");
+var request = require("request");
 
 // server
 const PORT = 12000;
@@ -42,10 +43,45 @@ function dbQueryAsync(query) {
   });
 }
 
-app.get("/api/class", async (req, res) => {
-  const user_number = "201911875";
-  const sqlQuery = `select user_classes from user where user_number = '${user_number}'`;
+app.get("/api/user", async (req, res) => {
+  const user_number = req.query.u_num;
+  const sqlQuery = `select * from user where user_number = '${user_number}'`;
+  user_json = [];
 
+  var t = await dbQueryAsync(sqlQuery);
+  var t1 = t[0];
+  // var u_name = t1.user_name;
+  // var u_major = t1.user_major;
+  user_json.push(t1);
+
+  res.json(user_json);
+});
+let account = [
+  {
+    u_id: "",
+    u_pw: "",
+  },
+];
+
+app.get("/lambda", (req, res) => {
+  const lambdaUrl =
+    "https://fs27p7cyza.execute-api.ap-northeast-2.amazonaws.com/beta/rekognition";
+
+  lambda_json = [];
+  request(lambdaUrl, function (error, response, body) {
+    if (error) {
+      console.log("error");
+    }
+    var t1 = JSON.parse(body);
+    var t2 = JSON.parse(t1.body);
+    console.log(t2);
+    res.send(t2);
+  });
+});
+
+app.get("/api/class", async (req, res) => {
+  const user_number = req.query.u_num;
+  const sqlQuery = `select * from user where user_number = '${user_number}'`;
   class_prof_json = [];
 
   var t = await dbQueryAsync(sqlQuery);
@@ -60,53 +96,47 @@ app.get("/api/class", async (req, res) => {
   for (var i = 0; i < classes.length; ++i) {
     var sqlQuery2 = `select * from class where class_id = '${classes[i]}'`;
     var t2 = await dbQueryAsync(sqlQuery2);
-    // console.log(t2[0]);
+
     class_prof_json.push(t2[0]);
-    //     var t3 = t2[0];
-    //     var s1 = t3.class_name;
-    //     var s2 = t3.class_prof;
-    //     class_prof_json[s1] = s2;
   }
   console.log(class_prof_json);
   res.json(class_prof_json);
 });
 
-let account = [
-  {
-    u_id: "",
-    u_pw: "",
-  },
-];
+app.post("/api/login", async (req, res) => {
+  try {
+    const { u_id, u_pw } = req.body;
+    account = [{ u_id, u_pw }];
 
-app.post("/api/login", (req, res) => {
-  // 데이터베이스에서 클래스 정보를 조회하는 쿼리 실행
-  const query = "SELECT * FROM user WHERE user_number=?";
+    const query = `SELECT * FROM user WHERE user_number='${account[0].u_id}'`;
+    const results = await dbQueryAsync(query);
 
-  const { u_id, u_pw } = req.body;
-  account = [{ u_id, u_pw }];
+    if (results.length >= 1) {
+      const storedUser = results[0];
+      let successCode = 0;
 
-  connection.query(query, [account[0].u_id], (error, results) => {
-    if (error) {
-      console.error("데이터베이스 조회 오류: ", error);
-      res.status(500).send("서버 오류");
-    } else {
-      if (results.length >= 1) {
-        let successCode = 0;
-
-        if (account[0].u_id.length === 5) {
-          successCode = 1;
-        } else if (account[0].u_id.length === 9) {
-          successCode = 2;
-        } else if (account[0].u_id.length === 6) {
-          successCode = 3;
-        }
-
-        res.json({ success: successCode });
-      } else {
-        res.json({ success: 0 });
+      if (
+        account[0].u_id.length === 5 &&
+        account[0].u_pw === storedUser.user_pw
+      ) {
+        successCode = 1;
+      } else if (
+        account[0].u_id.length === 9 &&
+        account[0].u_pw === storedUser.user_pw
+      ) {
+        successCode = 2;
+      } else if (account[0].u_id.length === 6 && account[0].u_pw === "1234") {
+        successCode = 3;
       }
+
+      res.json({ success: successCode });
+    } else {
+      res.json({ success: 0 });
     }
-  });
+  } catch (error) {
+    console.error("데이터베이스 조회 오류: ", error);
+    res.status(500).send("서버 오류");
+  }
 });
 
 // web server call

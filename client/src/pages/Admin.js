@@ -6,10 +6,12 @@ import currentLecture from "../data/currentLecture";
 
 function AdminPage() {
   const [classData, setClassData] = useState([]);
+  const [lambdaData, setLambdaData] = useState([]);
 
   useEffect(() => {
     const apiUrl = "http://localhost:12000/api/class";
-
+    // API Gateway 엔드포인트 URL
+    const GatewayUrl = "http://localhost:12000/lambda";
     axios
       .get(apiUrl)
       .then((response) => {
@@ -17,6 +19,13 @@ function AdminPage() {
         setClassData(response.data);
       })
       .catch((error) => console.error("데이터 가져오기 실패: ", error));
+
+    axios
+      .get(GatewayUrl)
+      .then((response) => {
+        setLambdaData(response.data);
+      })
+      .catch((error) => console.error("Lambda 함수 호출 중 에러 발생:", error));
   }, []);
 
   return (
@@ -52,12 +61,18 @@ function AdminPage() {
             <h2>[11:30] 출석 로그</h2>
           </div>
           <div>
-            {/* 임시 데이터 출력 */}
             {classData.map((classItem, index) => (
               <div key={index}>
                 <p>{classItem.class_name}</p>
                 <p>{classItem.class_prof} 교수님</p>
-                {/* 원하는 다른 데이터 표시 */}
+              </div>
+            ))}
+          </div>
+          <div>
+            {lambdaData.map((lambdaItem, index) => (
+              <div key={index}>
+                <p>{lambdaItem.image}</p>
+                <p>{lambdaItem.similarity} 정확도</p>
               </div>
             ))}
           </div>

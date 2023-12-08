@@ -3,21 +3,41 @@ import axios from "axios";
 import styles from "../styles/Home.module.css";
 import attendanceLog from "../data/attendanceLog";
 import currentLecture from "../data/currentLecture";
+import { useLocation } from "react-router-dom";
 
 function HomePage() {
   const [classData, setClassData] = useState([]);
+  const [userData, setUserData] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
+
+  const location = useLocation();
+  const num = location.state.user_number;
 
   useEffect(() => {
     const apiUrl = "http://localhost:12000/api/class";
-
+    const apiUrlUser = "http://localhost:12000/api/user";
     axios
-      .get(apiUrl)
+      .get(apiUrl, {
+        params: {
+          u_num: num,
+        },
+      })
       .then((response) => {
         // 받아온 데이터를 상태에 설정
         setClassData(response.data);
       })
       .catch((error) => console.error("데이터 가져오기 실패: ", error));
+
+    axios
+      .get(apiUrlUser, {
+        params: {
+          u_num: num,
+        },
+      })
+      .then((response) => {
+        setUserData(response.data);
+      })
+      .catch((error) => console.error("나가 하지마"));
   }, []);
 
   const handleClassItemClick = (index) => {
@@ -29,7 +49,11 @@ function HomePage() {
     <div>
       <header className={styles.Header_block}>
         <div className={styles.Profile}>
-          <span>지수인</span> 님 | 컴퓨터공학부
+          {userData.map((userItem, index) => (
+            <span>
+              {userItem.user_name} 님 | {userItem.user_major}
+            </span>
+          ))}
         </div>
       </header>
       <div className={styles.Body_block}>
