@@ -41,13 +41,6 @@ function AdminPage() {
         setUserData(response.data);
       })
       .catch((error) => console.error("나가 하지마"));
-
-    // axios
-    //   .get(GatewayUrl)
-    //   .then((response) => {
-    //     setLambdaData(response.data);
-    //   })
-    //   .catch((error) => console.error("Lambda 함수 호출 중 에러 발생:", error));
   }, []);
 
   const handleClassItemClick = (index) => {
@@ -108,10 +101,6 @@ function AdminPage() {
           <div className={styles.Class_block}>
             <h2>{classData[selectedClassIndex]?.class_name} ({classData[selectedClassIndex]?.class_sep})
             </h2>
-            <div>
-              {currentLecture.currentLecture.time}
-              <span>(48/48)</span>
-            </div>
           </div>
           <div className={styles.List_block}>
             <h2>학생 리스트</h2>

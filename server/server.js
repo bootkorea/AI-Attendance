@@ -169,6 +169,28 @@ app.get('/api/list', async (req, res) => {
     res.json(result);
 });
 
+app.get('/api/log', async (req, res) => {
+  const user_number = req.query.u_num;
+  const class_id = req.query.c_id;
+  const sqlQuery = `select * from class where class_id = '${class_id}'`;
+
+  class_json = [];
+  attendance_json = [];
+  result = [];
+
+  var t = await dbQueryAsync(sqlQuery);
+  // t 자체가 RowDataPacket JSON으로 이루어진 배열이다
+  // result.push(t);
+
+  const sqlQuery2 = `select * from attendance where attendance_id = '${class_id}' and attendance_student = '${user_number}'`;
+  var t2 = await dbQueryAsync(sqlQuery2);
+
+  result.push(t2);
+  res.json(result);
+  console.log("----");
+  console.log(result);
+});
+
 // web server call
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));

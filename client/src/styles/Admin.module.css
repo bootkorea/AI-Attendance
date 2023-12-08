@@ -42,10 +42,9 @@ h3 {
 
 .Body_block {
   display: flex;
-  justify-content: left;
+  justify-content: center;
   width: 100%;
   padding: 30px;
-  padding-left: 100px;
   margin: 0 auto;
   background-color: #fff;
 }
@@ -55,6 +54,7 @@ h3 {
   padding: 20px;
   padding-right: 50px;
   background-color: #fff;
+  border-right: 1px solid #C9C9C9;
 }
 
 ul {
@@ -80,16 +80,14 @@ ul {
 }
 
 .Right_block {
-  width: 900px;
+  width: 550px;
   padding: 20px;
   padding-left: 50px;
   background-color: #fff;
-  border-left: 1px solid #C9C9C9;
 }
 
 .Class_block {
-  width: 550px;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .Class_block > div {
