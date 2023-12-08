@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/Login.css";
+import styles from "../styles/Login.module.css";
 
 function LoginPage() {
   const [userInfo, setuserInfo] = useState({

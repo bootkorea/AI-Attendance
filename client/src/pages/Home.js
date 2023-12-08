@@ -72,9 +72,7 @@ function HomePage() {
         </div>
         <div className={styles.Right_block}>
           <div className={styles.Class_block}>
-            <h2>
-              {classData[selectedClassIndex]?.class_name} (
-              {classData[selectedClassIndex]?.class_sep})
+            <h2>{classData[selectedClassIndex]?.class_name} ({classData[selectedClassIndex]?.class_sep})
             </h2>
           </div>
           <div className={styles.Log_block}>
