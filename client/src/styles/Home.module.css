@@ -88,7 +88,7 @@ ul {
 }
 
 .Class_block {
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .Class_block > div {
@@ -106,17 +106,6 @@ ul {
   right: 15px;
   font-weight: 700;
   color: #0075FF;
-}
-
-.Attendance_button::before {
-  content: '>';
-  margin-right: 5px;
-}
-
-.Attendance_button {
-  text-decoration: none;
-  color: inherit;
-  font-weight: 700;
 }
 
 .Log_block {

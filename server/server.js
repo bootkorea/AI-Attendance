@@ -139,6 +139,32 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+// 입력: (교수명) + 수업명
+// 출력: 학생목록
+app.get("/api/list", async (req, res) => {
+  // const prof_name = "KDK";
+  const class_id = req.query.c_id;
+  const sqlQuery = `select attendance_student from attendance where attendance_id = '${class_id}'`;
+
+  var t = await dbQueryAsync(sqlQuery);
+  attendance_students = t;
+  unique_students = [];
+  for (var i = 0; i < attendance_students.length; ++i) {
+    var s = attendance_students[i].attendance_student;
+    if (!unique_students.includes(s)) unique_students.push(s);
+  }
+
+  result = [];
+  for (var i = 0; i < unique_students.length; ++i) {
+    const sqlQuery2 = `select * from user where user_number = '${unique_students[i]}'`;
+    var t2 = await dbQueryAsync(sqlQuery2);
+    result.push(t2[0]);
+  }
+
+  console.log(result);
+  res.send(result);
+});
+
 // web server call
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
