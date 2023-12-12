@@ -13,8 +13,8 @@ function HomePage() {
   const num = location.state.user_number;
 
   useEffect(() => {
-    const apiUrl = "52.23.93.229:12000/api/class";
-    const apiUrlUser = "52.23.93.229:12000/api/user";
+    const apiUrl = "3.37.51.187:12000/api/class";
+    const apiUrlUser = "3.37.51.187:12000/api/user";
     axios
       .get(apiUrl, {
         params: {
@@ -49,7 +49,7 @@ function HomePage() {
   };
 
   const sendClassId = () => {
-    const apiUrlList = "52.23.93.229:12000/api/log";
+    const apiUrlList = "3.37.51.187:12000/api/log";
     // 아래 코드에서 필요한 파라미터 및 데이터를 적절히 수정하세요
     axios
       .get(apiUrlList, {

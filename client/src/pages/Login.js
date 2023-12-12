@@ -13,7 +13,7 @@ function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent the form from submitting
 
-    const apiUrl = "52.23.93.229:12000/api/login";
+    const apiUrl = "3.37.51.187:12000/api/login";
     const { username, password } = userInfo;
 
     if (username === "" || username === undefined) {
