@@ -71,13 +71,14 @@ function LoginPage() {
 
   return (
     <div className="Login_block">
-      <h1>프로젝트 제목이 뭔데요?</h1>
+      <h1>예성아, 출석을 부탁해!</h1>
       <form onSubmit={handleLogin} className="Login_form">
         <label>
           <input
             type="text"
             name="username"
             placeholder="학번"
+            className="Input_button"
             value={userInfo.username}
             onChange={handleInputChange}
             required
@@ -88,6 +89,7 @@ function LoginPage() {
             type="password"
             name="password"
             placeholder="비밀번호"
+            className="Input_button"
             value={userInfo.password}
             onChange={handleInputChange}
             required

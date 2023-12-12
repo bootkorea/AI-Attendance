@@ -5,7 +5,10 @@ const fs = require("fs");
 const path = require("path");
 const app = express();
 const cors = require("cors");
+const multer = require("multer");
 var request = require("request");
+const multerS3 = require("multer-s3");
+const aws = require("aws-sdk");
 
 // server
 const PORT = 12000;
@@ -14,8 +17,43 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "../client/build")));
 
+// EJS 설정
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "../view"));
+
 app.listen(PORT, function () {
   console.log("listen on 12000");
+});
+
+// s3
+aws.config.update({
+  accessKeyId: "AKIA6CKFRKO3N6BKO3V2",
+  secretAccessKey: "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",
+  region: "ap-northeast-2",
+});
+
+const s3 = new aws.S3();
+
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: "group-photo-bucket",
+    acl: "public-read", // Access control list (ACL) 설정
+    key: function (req, file, cb) {
+      const classId = req.query.c_id;
+      const dateData = req.query.f_name;
+
+      const filename = `${classId}/${dateData}`;
+      cb(null, filename);
+    },
+  }),
+});
+
+// 파일 업로드 엔드포인트
+app.post("/api/upload", upload.single("file"), (req, res) => {
+  // 파일이 업로드되면 이 부분에서 파일 정보를 처리할 수 있습니다.
+  console.log("File uploaded:", req.file);
+  res.json({ message: "File uploaded successfully" });
 });
 
 // database
@@ -141,35 +179,34 @@ app.post("/api/login", async (req, res) => {
 
 // 입력: (교수명) + 수업명
 // 출력: 학생목록
-app.get('/api/list', async (req, res) => {
+app.get("/api/list", async (req, res) => {
   // const prof_name = "KDK";
   const class_id = req.query.c_id;
   const listQuery = `SELECT class_students FROM class WHERE class_id = '${class_id}'`;
   result = [];
-    
-    
-    var data = await dbQueryAsync(listQuery);
-    
-    try {
-      // class_students 속성에 접근하여 JSON 문자열을 파싱하여 배열로 변환
-      const studentsArray = JSON.parse(data[0].class_students);
 
-      studentsArray.forEach((student, index) => {
-        console.log(`Student ${index + 1}: ${student}`);
-      });
-      for(var i = 0; i < studentsArray.length; ++i) {
+  var data = await dbQueryAsync(listQuery);
+
+  try {
+    // class_students 속성에 접근하여 JSON 문자열을 파싱하여 배열로 변환
+    const studentsArray = JSON.parse(data[0].class_students);
+
+    studentsArray.forEach((student, index) => {
+      console.log(`Student ${index + 1}: ${student}`);
+    });
+    for (var i = 0; i < studentsArray.length; ++i) {
       const Query2 = `select * from user where user_number = '${studentsArray[i]}'`;
       var t = await dbQueryAsync(Query2);
       result.push(t);
-      }
-    } catch (error) {
-      console.error("JSON 파싱 오류 또는 데이터가 유효하지 않습니다.", error);
     }
-    console.log(result);
-    res.json(result);
+  } catch (error) {
+    console.error("JSON 파싱 오류 또는 데이터가 유효하지 않습니다.", error);
+  }
+  console.log(result);
+  res.json(result);
 });
 
-app.get('/api/log', async (req, res) => {
+app.get("/api/log", async (req, res) => {
   const user_number = req.query.u_num;
   const class_id = req.query.c_id;
   const sqlQuery = `select * from class where class_id = '${class_id}'`;
@@ -187,11 +224,77 @@ app.get('/api/log', async (req, res) => {
 
   result.push(t2);
   res.json(result);
-  console.log("----");
+  console.log("——");
   console.log(result);
 });
 
 // web server call
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
+});
+
+app.post("/lambda", async (req, res) => {
+  console.log(req.body);
+
+  classID = req.body[0]["class_id"];
+  filename = req.body[1]["date"];
+  console.log("LAMBDA LAMBDA LLLL");
+  console.log(classID);
+  console.log(filename);
+  const listQuery = `SELECT class_students FROM class WHERE class_id = '${classID}'`;
+  result = [];
+  var data = await dbQueryAsync(listQuery);
+  var attendance_map = new Map();
+
+  try {
+    // class_students 속성에 접근하여 JSON 문자열을 파싱하여 배열로 변환
+    var s = data[0].class_students;
+    s = s.replace(/\[/gi, "");
+    s = s.replace(/\]/gi, "");
+    s = s.replace(/\"/gi, "");
+    s = s.replace(/ /gi, "");
+    var class_students = s.split(",");
+
+    for (var i = 2; i < req.body.length; ++i) {
+      var student = req.body[i].image.substring(0, 9);
+      attendance_map.set(student, 1);
+    }
+
+    for (var i = 0; i < class_students.length; ++i) {
+      if (attendance_map.has(class_students[i])) {
+        const attQuery = `insert into attendance(attendance_student, attendance_id, attendance_time, attendance_att) values('${class_students[i]}', '${classID}', '${filename}', '출석')`;
+        await dbQueryAsync(attQuery);
+      } else {
+        const attQuery = `insert into attendance(attendance_student, attendance_id, attendance_time, attendance_att) values('${class_students[i]}', '${classID}', '${filename}', '결석')`;
+        await dbQueryAsync(attQuery);
+      }
+    }
+    const resQuery = `select * from attendance where attendance_id = '${classID}' and attendance_time = '${filename}'`;
+    var result = await dbQueryAsync(resQuery);
+    console.log("--------");
+    console.log(result);
+    res.json(result);
+  } catch (error) {
+    console.error("JSON 파싱 오류 또는 데이터가 유효하지 않습니다.", error);
+  }
+});
+
+app.post("/apt", async (req, res) => {
+  const classID = req.query.c_id;
+  const filename = req.query.f_name;
+  console.log("LAMBDA LIST START");
+
+  try {
+    const resQuery = `select * from attendance where attendance_id = '${classID}' and attendance_time = '${filename}'`;
+    // dbQueryAsync가 Promise를 반환한다고 가정하고 await를 사용
+    var result;
+    await setTimeout(async function () {
+      result = await dbQueryAsync(resQuery);
+      console.log("lambda list -------");
+      console.log(result);
+      res.json(result);
+    }, 30000);
+  } catch (error) {
+    console.error("DB에 정보가 저장되어 있지 않습니다.", error);
+  }
 });

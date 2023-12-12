@@ -15,6 +15,15 @@ h3 {
   font-size: 18px;
 }
 
+input {
+  width: 430px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid #BDBEBE;
+  padding: 8px;
+  margin-bottom: 15px;
+}
+
 .Header_block {
   position: relative;
   width: 100%;
@@ -73,7 +82,7 @@ ul {
   font-weight: 700;
 }
 
-.Class_list > li > span {
+.Name {
   position: absolute;
   right: 15px;
   color: #5A5A5A;
@@ -107,6 +116,13 @@ ul {
   color: #000;
 }
 
+.Upload_button {
+  border-radius: 5px;
+  border: 1px solid #BDBEBE;
+  padding: 5px 10px;
+  background-color: #F0F2F3;
+}
+
 .Current_block {
   display: flex;
 }
@@ -118,4 +134,16 @@ ul {
 
 .List_block {
   margin: 0;
+}
+
+.red {
+  position: absolute;
+  right: 15px;
+  color: red;
+}
+
+.green {
+  position: absolute;
+  right: 15px;
+  color: green;
 }

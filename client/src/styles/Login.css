@@ -18,7 +18,7 @@ label {
   margin-bottom: 8px;
 }
 
-input {
+.Input_button {
   width: 500px;
   height: 40px;
   border-radius: 10px;
