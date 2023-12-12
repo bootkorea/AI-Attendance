@@ -15,8 +15,8 @@ function AdminPage() {
   const num = location.state.user_number;
 
   useEffect(() => {
-    const apiUrl = "http://localhost:12000/api/class";
-    const apiUrlUser = "http://localhost:12000/api/user";
+    const apiUrl = "52.23.93.229:12000/api/class";
+    const apiUrlUser = "52.23.93.229:12000/api/user";
     axios
       .get(apiUrl, {
         params: {
@@ -50,7 +50,7 @@ function AdminPage() {
   };
 
   const sendClassId = () => {
-    const apiUrlList = "http://localhost:12000/api/list";
+    const apiUrlList = "52.23.93.229:12000/api/list";
     // 아래 코드에서 필요한 파라미터 및 데이터를 적절히 수정하세요
     axios
       .get(apiUrlList, {
@@ -94,8 +94,8 @@ function AdminPage() {
 
     const filename = `${year}${month}${day}${hours}${minutes}`;
     setDateData(`${year}년 ${month}월 ${day}일 ${hours}:${minutes}`);
-    const sibal = "http://localhost:12000/apt";
-    const sibal2 = "http://localhost:12000/api/upload";
+    const sibal = "52.23.93.229:12000/apt";
+    const sibal2 = "52.23.93.229:12000/api/upload";
     axios
       .all([
         axios.post(sibal2, formData, {

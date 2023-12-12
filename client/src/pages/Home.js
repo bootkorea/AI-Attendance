@@ -13,8 +13,8 @@ function HomePage() {
   const num = location.state.user_number;
 
   useEffect(() => {
-    const apiUrl = "http://localhost:12000/api/class";
-    const apiUrlUser = "http://localhost:12000/api/user";
+    const apiUrl = "52.23.93.229:12000/api/class";
+    const apiUrlUser = "52.23.93.229:12000/api/user";
     axios
       .get(apiUrl, {
         params: {
@@ -49,9 +49,9 @@ function HomePage() {
   };
 
   const sendClassId = () => {
-    const apiUrlList = "http://localhost:12000/api/log";
-      // 아래 코드에서 필요한 파라미터 및 데이터를 적절히 수정하세요
-      axios
+    const apiUrlList = "52.23.93.229:12000/api/log";
+    // 아래 코드에서 필요한 파라미터 및 데이터를 적절히 수정하세요
+    axios
       .get(apiUrlList, {
         params: {
           u_num: num,
@@ -67,10 +67,10 @@ function HomePage() {
       .catch((error) => console.error("데이터 가져오기 실패: ", error));
   };
 
-    // 이 함수는 selectedClassIndex가 업데이트될 때마다 호출됩니다.
-    useEffect(() => {
-      sendClassId();
-    }, [classData]);
+  // 이 함수는 selectedClassIndex가 업데이트될 때마다 호출됩니다.
+  useEffect(() => {
+    sendClassId();
+  }, [classData]);
 
   return (
     <div>
@@ -97,7 +97,9 @@ function HomePage() {
         </div>
         <div className={styles.Right_block}>
           <div className={styles.Class_block}>
-            <h2>{classData[selectedClassIndex]?.class_name} ({classData[selectedClassIndex]?.class_sep})
+            <h2>
+              {classData[selectedClassIndex]?.class_name} (
+              {classData[selectedClassIndex]?.class_sep})
             </h2>
           </div>
           <div className={styles.Log_block}>
@@ -106,8 +108,8 @@ function HomePage() {
               {logData.map((logGroup, index) => (
                 <li key={index} className={styles.Class_list}>
                   {logGroup.map((log, innerIndex) => (
-                      <li key={innerIndex}>{log.attendance_time}</li>
-                    ))}
+                    <li key={innerIndex}>{log.attendance_time}</li>
+                  ))}
                 </li>
               ))}
             </ul>
