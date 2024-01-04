@@ -27,9 +27,9 @@ app.listen(PORT, function () {
 
 // s3
 aws.config.update({
-  accessKeyId: "AKIA6CKFRKO3N6BKO3V2",
-  secretAccessKey: "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",
-  region: "ap-northeast-2",
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
 });
 
 const s3 = new aws.S3();
@@ -62,11 +62,11 @@ const conf = JSON.parse(data);
 const mysql = require("mysql");
 
 const connection = mysql.createConnection({
-  host: conf.host,
-  user: conf.user,
-  password: conf.password,
-  port: conf.port,
-  database: conf.database,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
 });
 connection.connect();
 
@@ -102,8 +102,7 @@ let account = [
 ];
 
 app.get("/lambda", (req, res) => {
-  const lambdaUrl =
-    "https://fs27p7cyza.execute-api.ap-northeast-2.amazonaws.com/beta/rekognition";
+  const lambdaUrl = "Lambda_ENDPOINT";
 
   lambda_json = [];
   request(lambdaUrl, function (error, response, body) {
